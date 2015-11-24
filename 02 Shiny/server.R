@@ -23,7 +23,7 @@ shinyServer(function(input, output) {
   df_Data2 <- df_Data2 %>% separate(HourMinuteSecond, c("d", "Hour", "Minute", "Second"))
   df_Data2 <- df_Data2 %>% mutate(ActiveEnergyConsumedPerMinute = GLOBALACTIVEPOWER * 1000/60 - SUBMETERING1 - SUBMETERING2 - SUBMETERING3)
   df_Data2 <- df_Data2 %>% group_by(Hour, MONTH) %>% summarise(AvgActiveEnergyConsumedPerMinute = mean(ActiveEnergyConsumedPerMinute))
-  df_Data2 <- df_Data2 %>% mutate(KPI = 'High')
+  df_Data2 <- df_Data2 %>% mutate(KPI = AvgActiveEnergyConsumedPerMinute > KPI_Low_Max_value)
   })
   
   output$distPlot1 <- renderPlot({             
@@ -81,5 +81,30 @@ shinyServer(function(input, output) {
             position=position_jitter(width=0.3, height=0)
       )
     plot
+  })
+  
+  # Begin code for Third Tab:
+  df3 <- eventReactive(input$clicks1, {df_Data3 <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="Select * from HOUSEHOLD_POWER_CONSUMPTION"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_jzp78', PASS='orcl_jzp78', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
+  df_Data3 <- df_Data3 %>% mutate(DayMonthYear = strsplit(as.character(DateFull), "/")) 
+  df_Data3 <- df_Data3 %>% separate(DayMonthYear, c("c", "DAY", "MONTH", "YEAR"))
+  df_Data3 <- df_Data3 %>% group_by(YEAR) %>% summarise(AVGGLOBALACTIVEPOWER = mean(GLOBALACTIVEPOWER))
+  })
+ 
+  output$distPlot3 <- renderPlot(height=1000, width=2000, {
+    plot3 <- ggplot() + 
+      coord_cartesian() + 
+      scale_x_discrete() +
+      scale_y_continuous() +
+      #facet_wrap(~CLARITY, ncol=1) +
+      labs(x=paste("Region Sales"), y=paste("Sum of Sales")) +
+      layer(data=df3(), 
+            mapping=aes(x=YEAR, y=AVGGLOBALACTIVEPOWER), 
+            stat="identity", 
+            stat_params=list(), 
+            geom="bar",
+            geom_params=list(colour="blue"), 
+            position=position_identity()
+      )
+    plot3
   })
 }) 

@@ -1,0 +1,9 @@
+##DV Project 3
+
+1) We used the data from the previous project
+
+2) We created a ui.R file and server.R file to launch the Shiny app
+
+3) I uploaded the finished shiny app onto the shinyapp.io after recreating the scatterplot, crosstab, and barchart
+
+URL: https://osiris22692.shinyapps.io/DV_SProject1
