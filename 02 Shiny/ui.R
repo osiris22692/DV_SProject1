@@ -10,10 +10,9 @@ dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Crosstab", tabName = "crosstab", icon = icon("dashboard")),
-      menuItem("Barchart", tabName = "barchart", icon = icon("th")),
-      menuItem("Blending", tabName = "blending", icon = icon("th")),
-      menuItem("Map", tabName = "map", icon = icon("th")),
-      menuItem("Table", tabName = "table", icon = icon("th"))
+      menuItem("ScatterPlot", tabName = "scatterplot", icon = icon("th")),
+      menuItem("BarChart", tabName = "barchart", icon = icon("th")),
+      menuItem("Blending", tabName = "blending", icon = icon("th"))
     )
   ),
   dashboardBody(
@@ -23,9 +22,9 @@ dashboardPage(
               actionButton(inputId = "light", label = "Light"),
               actionButton(inputId = "dark", label = "Dark"),
               sliderInput("KPI1", "KPI_Low_Max_value:", 
-                          min = 1, max = 4750,  value = 4750),
+                          min = 0, max = 15.26,  value = 15.26),
               sliderInput("KPI2", "KPI_Medium_Max_value:", 
-                          min = 4750, max = 5000,  value = 5000),
+                          min = 15.26, max = 22.26,  value = 22.26),
               textInput(inputId = "title", 
                         label = "Crosstab Title",
                         value = "Diamonds Crosstab\nSUM_PRICE, SUM_CARAT, SUM_PRICE / SUM_CARAT"),
@@ -34,7 +33,7 @@ dashboardPage(
       ),
       
       # Second tab content
-      tabItem(tabName = "barchart",
+      tabItem(tabName = "scatterplot",
               actionButton(inputId = "clicks2",  label = "Click me"),
               plotOutput("distPlot2")
       ),
